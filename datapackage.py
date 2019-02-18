@@ -14,7 +14,7 @@ def constructPackageName(submission_name, version_number):
     A lowercase, alphanumeric string allowing '.', '-', '_'.
     See https://frictionlessdata.io/specs/data-package/#name
     """
-    pkg_name = submission_name + '_' + version_number
+    pkg_name = submission_name + '_v' + version_number
     pattern = re.compile('[._-\W_]+')
     return pattern.sub('_', pkg_name).lower()
 

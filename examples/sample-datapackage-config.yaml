@@ -1,0 +1,60 @@
+name: Metzyme 0.2
+version: 1
+title: METYZME Global Proteomics Dataset for expedition KM1128
+description: "Global metaproteomic dataset for KM1128 the METZYME expedition. Size fractionated samples collected by McLane pump filters (filter size 0.2 – 3.0 micron). The global proteome dataset presented here included 16951 protein identifications and 31994 unique peptide identifications (Table S1) compiled from 37 samples and 74 raw files (CID and HCD modes for each file) and ### total spectra."
+homepage: https://www.bco-dmo.org/project/2236
+licenses:
+  -
+    type: CC-BY-4.0
+    title: Creative Commons Attribution 4.0
+    web: https://creativecommons.org/licenses/by/4.0/
+
+contributors:
+  -
+    name: Makoto Saito
+    email: msaito@whoi.edu
+    uri: http://lod.bco-dmo.org/id/person/50985
+    orcid: 0000-0001-6040-9295
+    role: "author"
+  -
+    name: BCO-DMO
+    email: info@bco-dmo.org
+    uri: http://lod.bco-dmo.org/id/affiliation/191
+    role: "publisher"
+keywords:
+  - METZYME
+  - proteomics
+  - Thermo Vantage mass spectrometer
+  - Mass Spectrometer
+  - McLane Pumps WTS-LV
+  - Large Volume Pumping System-WTS-LV
+odo:hasDeployment:
+  -
+    name: KM1128
+    uri: http://lod.bco-dmo.org/id/deployment/59053
+files:
+  -
+    type: http://ocean-data.org/schema/data-type/v1.0/ProteinSpectralCounts
+    filname: protein_spectral_counts.csv
+    format: csv
+    schema:
+      column_headers:
+        cruise:
+          type: http://ocean-data.org/schema/data-type/v1.0/CruiseIdentifier
+        scaffold_id:
+          type: http://ocean-data.org/schema/data-type/v1.0/SampleIdentifier
+  -
+    type: http://ocean-data.org/schema/data-type/v1.0/FASTA-ProteinIdentifications
+    filename: proteins.fasta
+    format: FASTA
+  -
+    type: http://ocean-data.org/schema/data-type/v1.0/PeptideSpectralCounts
+    filname: peptide_spectral_counts.csv
+    format: csv
+    schema:
+      column_headers:
+        cruise:
+          type: http://ocean-data.org/schema/data-type/v1.0/CruiseIdentifier
+        station:
+          type: http://ocean-data.org/schema/data-type/v1.0/CruiseStationIdentifier
+
