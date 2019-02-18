@@ -10,18 +10,11 @@ Create a Frictionlessdata Data Package for the OceanProteinPortal.
 
 TEMPLATE_MAPPINGS = None
 
-def constructPackageName(submission_name, version_number):
-    """Construct a package name.
-
-    A lowercase, alphanumeric string allowing '.', '-', '_'.
-    See https://frictionlessdata.io/specs/data-package/#name
-    """
-    pkg_name = submission_name + '_v' + version_number
-    pattern = re.compile('[._-\W_]+')
-    return pattern.sub('_', pkg_name).lower()
 
 def buildTabularPackage(config_file):
-    """Build a tabular OPP DataPackage."""
+    """Build a tabular OPP DataPackage.
+
+    See examples/sample-datapackage-confgi.yaml"""
     global TEMPLATE_MAPPINGS
 
     # Read the configuration
@@ -30,14 +23,17 @@ def buildTabularPackage(config_file):
 
     # Data provider tells us which ontology they used
     ontology_version = config.get('ontology-version', oceanproteinportal.ontology.getLatestOntologyVersion())
+    if (ontology_version not in TEMPLATE_MAPPINGS)
+        raise Exception('Unknown Ontology version')
+
 
     submission_name = config.get('name', None)
     if submission_name is None:
         raiseException('Submission Name is required.')
     version_number = config.get('version', None)
     if version_number is None:
-
         raiseException('Version Number is required.')
+    protein_data = config.get('protein')
     if protein_data is None:
         raiseException('Path to protein spectral counts is required.')
     if peptide_data is None:
@@ -59,7 +55,14 @@ def buildTabularPackage(config_file):
       'odo-dt:dataType': { '@id': oceanproteinportal.ontology.getDataFileType('protein') }
     })
     proteins.infer()
+
+    if (ontology_version not in TEMPLATE_MAPPINGS)
+        raise Exception('Unknown Ontology version')
+    protein_mappings = TEMPLATE_MAPPINGS[ontology_version]['protein']
+
+    if
     for index, field in proteins.descriptor['schema']['fields']:
+
 
 
     package.add_resource(proteins.descriptor)
@@ -100,7 +103,18 @@ def buildTabularPackage(config_file):
 
     return dp_path, errors
 
+def constructPackageName(submission_name, version_number):
+    """Construct a package name.
+
+    A lowercase, alphanumeric string allowing '.', '-', '_'.
+    See https://frictionlessdata.io/specs/data-package/#name
+    """
+    pkg_name = submission_name + '_v' + version_number
+    pattern = re.compile('[._-\W_]+')
+    return pattern.sub('_', pkg_name).lower()
+
 def templateMappings(config_file='templates/ontology_mappings.yaml'):
+  """Read how the template columns map to the ontology."""
   global TEMPLATE_MAPPINGS
   # Read the configuration
     with open(config_file, 'r') as yamlfile:

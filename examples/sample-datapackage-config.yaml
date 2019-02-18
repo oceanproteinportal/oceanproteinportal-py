@@ -32,32 +32,29 @@ odo:hasDeployment:
   -
     name: KM1128
     uri: http://lod.bco-dmo.org/id/deployment/59053
+ontology-version: v1.0
 files:
-  -
-    type: http://ocean-data.org/schema/data-type/v1.0/ProteinSpectralCounts
-    filname: protein_spectral_counts.csv
-    format: csv
-    schema:
-      column_headers:
-        cruise:
-          type: http://ocean-data.org/schema/data-type/v1.0/CruiseIdentifier
-        scaffold_id:
-          type: http://ocean-data.org/schema/data-type/v1.0/SampleIdentifier
-        other_protein_ids:
-          type: http://ocean-data.org/schema/data-type/v1.0/OtherIdentifiedProteins
-          delimiter: " || "
-  -
+  protein:
+    filename: protein_spectral_counts.csv
+    mediatype: text/csv
+    column_headers:
+      cruise:
+        type: http://ocean-data.org/schema/data-type/v1.0/CruiseIdentifier
+      scaffold_id:
+        type: http://ocean-data.org/schema/data-type/v1.0/SampleIdentifier
+      other_protein_ids:
+        type: http://ocean-data.org/schema/data-type/v1.0/OtherIdentifiedProteins
+        delimiter: " || "
+  fasta:
     type: http://ocean-data.org/schema/data-type/v1.0/FASTA-ProteinIdentifications
     filename: proteins.fasta
-    format: FASTA
-  -
-    type: http://ocean-data.org/schema/data-type/v1.0/PeptideSpectralCounts
-    filname: peptide_spectral_counts.csv
-    format: csv
-    schema:
-      column_headers:
-        cruise:
-          type: http://ocean-data.org/schema/data-type/v1.0/CruiseIdentifier
-        station:
-          type: http://ocean-data.org/schema/data-type/v1.0/CruiseStationIdentifier
+    mediatype: text/fasta
+  peptide:
+    filename: peptide_spectral_counts.csv
+    mediatype: text/csv
+    column_headers:
+      cruise:
+        type: http://ocean-data.org/schema/data-type/v1.0/CruiseIdentifier
+      station:
+        type: http://ocean-data.org/schema/data-type/v1.0/CruiseStationIdentifier
 
