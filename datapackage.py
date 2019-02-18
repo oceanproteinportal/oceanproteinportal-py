@@ -29,7 +29,7 @@ def buildTabularPackage(config_file):
         config = yaml.load(yamlfile)
 
     # Data provider tells us which ontology they used
-    ontology_version = config.get('ontology-version', 'v1')
+    ontology_version = config.get('ontology-version', oceanproteinportal.ontology.getLatestOntologyVersion())
 
     submission_name = config.get('name', None)
     if submission_name is None:

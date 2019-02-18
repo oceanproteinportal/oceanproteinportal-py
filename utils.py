@@ -1,7 +1,6 @@
-
-'''
+"""
 Utility package for general use functions.
-'''
+"""
 
 # Helper function for setting the logging level
 def getLogLevel(level_str):
