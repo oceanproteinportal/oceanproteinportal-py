@@ -17,3 +17,12 @@ def getDataFileType(type):
         return 'http://ocean-data.org/schema/data-type/v1.0/PeptideSpectralCounts'
     return None
 
+def getTemplateMappings(config_file='templates/ontology_mappings.yaml'):
+    """Read how the template columns map to the ontology.
+
+    !!! Move this information to the ontology !!!
+    """
+    # Read the configuration
+    with open(config_file, 'r') as yamlfile:
+        mappings = yaml.load(yamlfile)
+    return mappings
