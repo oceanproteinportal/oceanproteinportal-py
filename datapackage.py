@@ -8,6 +8,8 @@ from datapackage import Package, Resource, validate, exceptions
 Create a Frictionlessdata Data Package for the OceanProteinPortal.
 """
 
+TEMPLATE_MAPPINGS = None
+
 def constructPackageName(submission_name, version_number):
     """Construct a package name.
 
@@ -20,10 +22,14 @@ def constructPackageName(submission_name, version_number):
 
 def buildTabularPackage(config_file):
     """Build a tabular OPP DataPackage."""
+    global TEMPLATE_MAPPINGS
 
     # Read the configuration
     with open(config_file, 'r') as yamlfile:
         config = yaml.load(yamlfile)
+
+    # Data provider tells us which ontology they used
+    ontology_version = config.get('ontology-version', 'v1')
 
     submission_name = config.get('name', None)
     if submission_name is None:
@@ -53,7 +59,8 @@ def buildTabularPackage(config_file):
       'odo-dt:dataType': { '@id': oceanproteinportal.ontology.getDataFileType('protein') }
     })
     proteins.infer()
-    for field in proteins.descriptor['schema']['fields']:
+    for index, field in proteins.descriptor['schema']['fields']:
+
 
     package.add_resource(proteins.descriptor)
 
@@ -93,9 +100,9 @@ def buildTabularPackage(config_file):
 
     return dp_path, errors
 
+def templateMappings(config_file='templates/ontology_mappings.yaml'):
+  global TEMPLATE_MAPPINGS
+  # Read the configuration
+    with open(config_file, 'r') as yamlfile:
+        TEMPLATE_MAPPINGS = yaml.load(yamlfile)
 
-if __name__ == "__main__":
-    no_require_validation = False
-    if len(sys.argv) > 5:
-        no_require_validation = sys.argv[5] == 'True'
-    main(pkg_name=sys.argv[1], protein_data=sys.argv[2], fasta_data=sys.argv[3], peptide_data=sys.argv[4], no_require_validation=no_require_validation)

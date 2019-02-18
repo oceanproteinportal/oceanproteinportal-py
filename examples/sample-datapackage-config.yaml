@@ -43,6 +43,9 @@ files:
           type: http://ocean-data.org/schema/data-type/v1.0/CruiseIdentifier
         scaffold_id:
           type: http://ocean-data.org/schema/data-type/v1.0/SampleIdentifier
+        other_protein_ids:
+          type: http://ocean-data.org/schema/data-type/v1.0/OtherIdentifiedProteins
+          delimiter: " || "
   -
     type: http://ocean-data.org/schema/data-type/v1.0/FASTA-ProteinIdentifications
     filename: proteins.fasta

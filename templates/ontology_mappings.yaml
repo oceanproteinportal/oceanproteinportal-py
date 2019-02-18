@@ -1,0 +1,208 @@
+v1:
+    _ontology: http://ocean-data.org/schema/data-type/v1.0/
+    protein:
+        sample_id:
+            status: required
+            type: string
+            class: SampleIdentifier
+        cruise_id:
+            status: required
+            type: string
+            class: CruiseIdentifier
+        station_id:
+            status: required
+            type: string
+            class: CruiseStationIdentifier
+        latitude_dd:
+            status: required
+            type: number
+            class: LatitudeDecimalDegrees
+        longitude_dd:
+            status: required
+            type: number
+            class: LongitudeDecimalDegrees
+        depth_m:
+            status: required
+            type: number
+            class: DepthMeters
+        date_y-m-d:
+            status: required
+            type: string
+            class: Date
+        time_h-m-s:
+            status: recommended
+            type: string
+            class: Time
+        minimum_filter_size_microns:
+            status: required
+            type: number
+            class: MinFilterSizeInMicrons
+        maximum_filter_size_microns:
+            status: required
+            type: number
+            class: MaxFilterSizeInMicrons
+        protein_id:
+            status: required
+            type: string
+            class: ProteinIdentifier
+        protein_name:
+            status: required
+            type: string
+            class: IdentifiedProductName
+        spectral_count:
+            status: required
+            type: integer
+            class: SpectralCount
+        molecular_weight_kDa:
+            status: optional
+            type: number
+            class: MolecularWeightInDaltons
+        ncbi_id:
+            status: optional
+            type: string
+            class: BestNCBITaxonIdentifier
+        ncbi_name:
+            status: optional
+            type: string
+            class: BestNCBITaxonName
+        kegg_id:
+            status: optional
+            type: string
+            class: KeggIdentifier
+        kegg_description:
+            status: optional
+            type: string
+            class: KeggName
+        kegg_pathway:
+            status: optional
+            type: string
+            class: KeggDescription
+        pfams_id:
+            status: optional
+            type: string
+            class: PFamsIdentifier
+        pfams_name:
+            status: optional
+            type: string
+            class: PFamsDescription
+        uniprot_id:
+            status: optional
+            type: string
+            class: UniprotIdentifier
+        enzyme_comm_id:
+            status: optional
+            type: string
+            class: EnzymeCommissionIdentifier
+        other_identified_proteins:
+            status: optional
+            type: string
+            class: OtherIdentifiedProteins
+    peptide:
+        sample_id:
+            status: required
+            type: string
+            class: SampleIdentifier
+        cruise_id:
+            status: required
+            type: string
+            class: CruiseIdentifier
+        station_id:
+            status: required
+            type: string
+            class: CruiseStationIdentifier
+        latitude_dd:
+            status: required
+            type: number
+            class: LatitudeDecimalDegrees
+        longitude_dd:
+            status: required
+            type: number
+            class: LongitudeDecimalDegrees
+        depth_m:
+            status: required
+            type: number
+            class: DepthMeters
+        date_y-m-d:
+            status: required
+            type: string
+            class: Date
+        time_h-m-s:
+            status: recommended
+            type: string
+            class: Time
+        minimum_filter_size_microns:
+            status: required
+            type: number
+            class: MinFilterSizeInMicrons
+        maximum_filter_size_microns:
+            status: required
+            type: number
+            class: MaxFilterSizeInMicrons
+        peptide_sequence:
+            status: required
+            type: string
+            class: GeneticSequenceIdentifier
+        peptide_start_index:
+            status: required
+            type: integer
+            class: PeptideSpectralCounts_StartIndex
+        peptide_stop_index:
+            status: required
+            type: integer
+            class: PeptideSpectralCounts_StopIndex
+        protein_molecular_weight_kDa:
+            status: optional
+            type: number
+            class: MolecularWeightInDaltons
+        protein_id:
+            status: required
+            type: string
+            class: PeptideSpectralCounts_ProteinIdentifier
+        spectral_count_sum:
+            status: required
+            type: number
+            class: PeptideSpectralCounts_SpectralCountSummation
+        other_protein_ids:
+            status: optional
+            type: string
+            class: PeptideSpectralCounts_ProteinAccessionIdentifiers
+        best_protein_id_probability:
+            status: optional
+            type: number
+            class: PeptideSpectralCounts_BestIdProbability
+        best_sequest_DCn_score:
+            status: optional
+            type: number
+            class: PeptideSpectralCounts_BestSequestDCnScore
+        best_sequest_Xcorr_score:
+            status: optional
+            type: number
+            class: PeptideSpectralCounts_BestSequestXCorrScore
+        plus2H_spectra_count:
+            status: optional
+            type: number
+            class: PeptideSpectralCounts_Plus2HSpectraCount
+        plus3H_spectra_count:
+            status: optional
+            type: number
+            class: PeptideSpectralCounts_Plus3HSpectraCount
+        plus4H_spectra_count:
+            status: optional
+            type: number
+            class: PeptideSpectralCounts_Plus4HSpectraCount
+        median_retention_time:
+            status: optional
+            type: number
+            class: PeptideSpectralCounts_MedianRetentionTime
+        total_precursor_intensity:
+            status: optional
+            type: string
+            class: PeptideSpectralCounts_TotalPrecursorIntensity
+        TIC:
+            status: optional
+            type: number
+            class: PeptideSpectralCounts_TotalTIC
+        absolute_units_fmol-L:
+            status: optional
+            type: string
+            class: PeptideSpectralCounts_AbsoluteUnits_fmol
