@@ -1,4 +1,4 @@
-v1:
+v1.0:
     _ontology: http://ocean-data.org/schema/data-type/v1.0/
     protein:
         sample_id:

@@ -1,0 +1,55 @@
+v1.0:
+  protein:
+    http://ocean-data.org/schema/data-type/v1.0/SampleIdentifier: sampleId
+    http://ocean-data.org/schema/data-type/v1.0/CruiseIdentifier: spectralCount:cruise
+    http://ocean-data.org/schema/data-type/v1.0/CruiseStationIdentifier: spectralCount:station
+    http://ocean-data.org/schema/data-type/v1.0/LatitudeDecimalDegrees: spectralCount:coordinate:lat
+    http://ocean-data.org/schema/data-type/v1.0/LongitudeDecimalDegrees: spectralCount:coordinate:lon
+    http://ocean-data.org/schema/data-type/v1.0/DepthMeters: spectralCount:depth
+    http://ocean-data.org/schema/data-type/v1.0/Date:
+    http://ocean-data.org/schema/data-type/v1.0/Time:
+    http://ocean-data.org/schema/data-type/v1.0/DateTime:
+    http://ocean-data.org/schema/data-type/v1.0/MinFilterSizeInMicrons:
+    http://ocean-data.org/schema/data-type/v1.0/MaxFilterSizeInMicrons:
+    http://ocean-data.org/schema/data-type/v1.0/ProteinIdentifier:
+    http://ocean-data.org/schema/data-type/v1.0/IdentifiedProductName:
+    http://ocean-data.org/schema/data-type/v1.0/SpectralCount:
+    http://ocean-data.org/schema/data-type/v1.0/MolecularWeightInDaltons:
+    http://ocean-data.org/schema/data-type/v1.0/BestNCBITaxonIdentifier:
+    http://ocean-data.org/schema/data-type/v1.0/BestNCBITaxonName:
+    http://ocean-data.org/schema/data-type/v1.0/KeggIdentifier:
+    http://ocean-data.org/schema/data-type/v1.0/KeggName:
+    http://ocean-data.org/schema/data-type/v1.0/KeggDescription:
+    http://ocean-data.org/schema/data-type/v1.0/PFamsIdentifier:
+    http://ocean-data.org/schema/data-type/v1.0/PFamsDescription:
+    http://ocean-data.org/schema/data-type/v1.0/UniprotIdentifier:
+    http://ocean-data.org/schema/data-type/v1.0/EnzymeCommissionIdentifier:
+    http://ocean-data.org/schema/data-type/v1.0/OtherIdentifiedProteins:
+  peptide:
+    http://ocean-data.org/schema/data-type/v1.0/SampleIdentifier:
+    http://ocean-data.org/schema/data-type/v1.0/CruiseIdentifier:
+    http://ocean-data.org/schema/data-type/v1.0/CruiseStationIdentifier:
+    http://ocean-data.org/schema/data-type/v1.0/LatitudeDecimalDegrees:
+    http://ocean-data.org/schema/data-type/v1.0/LongitudeDecimalDegrees:
+    http://ocean-data.org/schema/data-type/v1.0/DepthMeters:
+    http://ocean-data.org/schema/data-type/v1.0/Date:
+    http://ocean-data.org/schema/data-type/v1.0/Time:
+    http://ocean-data.org/schema/data-type/v1.0/MinFilterSizeInMicrons:
+    http://ocean-data.org/schema/data-type/v1.0/MaxFilterSizeInMicrons:
+    http://ocean-data.org/schema/data-type/v1.0/GeneticSequenceIdentifier:
+    http://ocean-data.org/schema/data-type/v1.0/PeptideSpectralCounts_StartIndex:
+    http://ocean-data.org/schema/data-type/v1.0/PeptideSpectralCounts_StopIndex:
+    http://ocean-data.org/schema/data-type/v1.0/MolecularWeightInDaltons:
+    http://ocean-data.org/schema/data-type/v1.0/PeptideSpectralCounts_ProteinIdentifier:
+    http://ocean-data.org/schema/data-type/v1.0/PeptideSpectralCounts_SpectralCountSummation:
+    http://ocean-data.org/schema/data-type/v1.0/PeptideSpectralCounts_ProteinAccessionIdentifiers:
+    http://ocean-data.org/schema/data-type/v1.0/PeptideSpectralCounts_BestIdProbability:
+    http://ocean-data.org/schema/data-type/v1.0/PeptideSpectralCounts_BestSequestDCnScore:
+    http://ocean-data.org/schema/data-type/v1.0/PeptideSpectralCounts_BestSequestXCorrScore:
+    http://ocean-data.org/schema/data-type/v1.0/PeptideSpectralCounts_Plus2HSpectraCount:
+    http://ocean-data.org/schema/data-type/v1.0/PeptideSpectralCounts_Plus3HSpectraCount:
+    http://ocean-data.org/schema/data-type/v1.0/PeptideSpectralCounts_Plus4HSpectraCount:
+    http://ocean-data.org/schema/data-type/v1.0/PeptideSpectralCounts_MedianRetentionTime:
+    http://ocean-data.org/schema/data-type/v1.0/PeptideSpectralCounts_TotalPrecursorIntensity:
+    http://ocean-data.org/schema/data-type/v1.0/PeptideSpectralCounts_TotalTIC:
+    http://ocean-data.org/schema/data-type/v1.0/PeptideSpectralCounts_AbsoluteUnits_fmol:

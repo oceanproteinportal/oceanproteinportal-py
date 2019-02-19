@@ -6,18 +6,22 @@ def getLatestOntologyVersion():
     """Read ontology to get latest version, but for now encode here"""
     return 'v1.0'
 
-def getDataFileType(type):
+def getDataFileType(type, ontology_version=None):
     """Read ontology to get data file types, but for now encode here"""
-    vocabs = getVocabularies()
-    if (type == 'protein'):
-        return 'http://ocean-data.org/schema/data-type/v1.0/ProteinSpectralCounts'
-    elif (type == 'fasta'):
-        return 'http://ocean-data.org/schema/data-type/v1.0/FASTA-ProteinIdentifications'
-    elif (type == 'peptide'):
-        return 'http://ocean-data.org/schema/data-type/v1.0/PeptideSpectralCounts'
-    return None
+    if (ontology_version is None)
+        ontology_version = getLatestOntologyVersion()
 
-def getTemplateMappings(config_file='templates/ontology_mappings.yaml'):
+    if (ontology_version == "v1.0"):
+        uri = 'http://ocean-data.org/schema/data-type/v1.0/'
+        if (type == 'protein'):
+            return uri + 'ProteinSpectralCounts'
+        elif (type == 'fasta'):
+            return uri + 'FASTA-ProteinIdentifications'
+        elif (type == 'peptide'):
+            return uri + 'PeptideSpectralCounts'
+        return None
+
+def getTemplateMappings(config_file='config/ontology_template_mappings.yaml'):
     """Read how the template columns map to the ontology.
 
     !!! Move this information to the ontology !!!
@@ -26,3 +30,4 @@ def getTemplateMappings(config_file='templates/ontology_mappings.yaml'):
     with open(config_file, 'r') as yamlfile:
         mappings = yaml.load(yamlfile)
     return mappings
+

@@ -8,6 +8,8 @@ from datapackage import Package, Resource, validate, exceptions
 Create a Frictionlessdata Data Package for the OceanProteinPortal.
 """
 
+DATAPACKAGE_ONTOLOGY_KEY = '_ontology'
+
 def buildTabularPackage(config_file):
     """Build a tabular OPP DataPackage.
 
@@ -31,10 +33,6 @@ def buildTabularPackage(config_file):
     if fasta_data is None:
         raiseException('Path to protein FASTA is required.')
 
-    # Return variables
-    dp_path = None
-    errors = None
-
     # Get the mappings between data templates and the ontology
     template_mappings = oceanproteinportal.ontology.getTemplateMappings()
 
@@ -44,27 +42,36 @@ def buildTabularPackage(config_file):
         raise Exception('Unknown Ontology version')
 
     pkg_name = constructPackageName(submission_name=submission_name, version_number=version_number)
-    package = Package({'name': pkg_name})
+    package = Package({
+      'name': pkg_name,
+      'ontology-version': ontology_version
+    })
 
     # Protein data
     proteins = Resource({
       'profile': 'tabular-data-resource',
       'path': protein_data,
       'name': pkg_name + '-proteins',
-      'odo-dt:dataType': { '@id': oceanproteinportal.ontology.getDataFileType('protein') }
+      'odo-dt:dataType': { '@id': oceanproteinportal.ontology.getDataFileType(type='protein', ontology_version=ontology_version) }
     })
     # Infer the field types
     proteins.infer()
+    logging.info('PROTEIN Data:')
     # Map any known field names to the ontology knowledge
     for index, field in proteins.descriptor['schema']['fields']:
         if (field['name'] in template_mappings[ontology_version]['protein']):
             mapping = template_mappings[ontology_version]['protein'][field['name']]
             proteins.descriptor['schema']['fields'][index]['rdfType'] = mapping['class']
             proteins.descriptor['schema']['fields'][index]['type'] = mapping['type']
+            logging.info('- PROTEIN field: %s' % (field))
+        else
+            logging.info('- PROTEIN: Skipping unknown field %s' % (field))
     # Add the protein data descriptor to the package
     package.add_resource(proteins.descriptor)
+    logging.info('Added PROTEIN data.')
 
     # Protein FASTA data
+    logging.info('Protein FASTA Data:')
     fasta = Resource({
       'profile': 'data-resource',
       'path': fasta_data,
@@ -72,42 +79,52 @@ def buildTabularPackage(config_file):
       'encoding': 'utf-8',
       'format': 'fasta',
       'mediatype': 'text/fasta',
-      'odo-dt:dataType': { '@id': oceanproteinportal.ontology.getDataFileType('fasta') }
+      'odo-dt:dataType': { '@id': oceanproteinportal.ontology.getDataFileType(type='fasta', ontology_version=ontology_version) }
     })
     # Add the protein FASTA data descriptor to the package
     package.add_resource(fasta.descriptor)
+    logging.info('Added protein FASTA data.')
 
     # Peptide data
     peptides = Resource({
       'profile': 'tabular-data-resource',
       'path': peptide_data,
       'name': pkg_name + '-peptides',
-      'odo-dt:dataType': { '@id': oceanproteinportal.ontology.getDataFileType('peptide') }
+      'odo-dt:dataType': { '@id': oceanproteinportal.ontology.getDataFileType(type='peptide', ontology_version=ontology_version) }
     })
     # Infer the field types
     peptides.infer()
+    logging.info('PEPTIDE Data:')
     # Map any known field names to the ontology knowledge
     for index, field in peptides.descriptor['schema']['fields']:
         if (field['name'] in template_mappings[ontology_version]['peptide']):
             mapping = template_mappings[ontology_version]['protein'][field['name']]
             peptides.descriptor['schema']['fields'][index]['rdfType'] = mapping['class']
             peptides.descriptor['schema']['fields'][index]['type'] = mapping['type']
+            logging.info('- PEPTIDE field: %s' % (field))
+        else
+            logging.info('- PEPTIDE: Skipping unknown field %s' % (field))
     # Add the protein data descriptor to the package
     package.add_resource(peptides.descriptor)
+    logging.info('Added PEPTIDE data.')
 
     # Validate the package
     package.commit()
     try:
-        valid = validate(package.descriptor)
+        valid = datapackage.validate(package.descriptor)
+        logging.info('Valid data package: %s' % (valid))
     except exceptions.ValidationError as exception:
-        errors = exception.errors:
+        logging.exception('Validation errors occurred')
+        raise exception
 
-    # Save the datapackage
+    # Save the datapackage if valid or no validation check required.
     if no_require_validation or package.valid:
         dp_path = save_path + '/datapackage.json'
         package.save(dp_path)
+        logging.info('Saved the data package: %s' % (dp_path))
+        return dp_path
 
-    return dp_path, errors
+    return None
 
 def constructPackageName(submission_name, version_number):
     """Construct a package name.
@@ -120,3 +137,100 @@ def constructPackageName(submission_name, version_number):
     return pattern.sub('_', pkg_name).lower()
 
 
+def datapackageCruises(datapackage):
+    """Get cruise information from datapackage"""
+    if 'odo:hasDeployment' not in datapackage.descriptor:
+        return None
+
+    cruises = {}
+    for cruise in datapackage.descriptor['odo:hasDeployment']:
+        label = cruise.get('name')
+        cruises[label] = {
+          'label': label,
+          'uri': cruise.get('uri', None)
+        }
+    return cruises
+
+def getDatapackageOntologyVersion(datapackage):
+    """Get the ontology version defined in the datapackage"""
+    return datapackage.descriptor.get('ontology-version', oceanproteinportal.ontology.getLatestOntologyVersion())
+
+def getDatapackageOntology(datapackage):
+    """Get the ontology URI prefix defined in the datapackage"""
+    global DATAPACKAGE_ONTOLOGY_KEY
+
+    ontology_version = getDatapackageOntologyVersion(datapackage)
+    template_mappings = oceanproteinportal.ontology.getTemplateMappings()
+
+    if (ontology_version not in template_mappings):
+        raise Exception('No ontology defined for: %s' % (ontology_version))
+    if (DATAPACKAGE_ONTOLOGY_KEY not in template_mappings[ontology_version]):
+        raise Exception('Mapping does not define an ontology for version : %s' % (ontology_version))
+
+    return template_mappings[ontology_version][DATAPACKAGE_ONTOLOGY_KEY]
+
+def findResource(datapackage, resource_type):
+    """Find a specific resource by its ontology class"""
+    # Get the Ontology Version
+    ontology_version = oceanproteinportal.datapackage.getDatapackageOntologyVersion(datapackage)
+
+    dataTypeId = None
+    # Find the resource
+    for resource in datapackage.resources:
+        dataType = resource.descriptor.get('odo-dt:dataType', None)
+        if dataType is not None:
+            dataTypeId = dataType.get('@id', None)
+            if dataTypeId == oceanproteinportal.ontology.getDataFileType(type=resource_type, ontology_version=ontology_version):
+                return resource
+
+    return None
+
+def processFieldValue( value, descriptor, field_type):
+    """Process a field's value"""
+
+    if 'missingValues' in descriptor:
+        for miss in descriptor['missingValues']:
+            if value == miss:
+              return None
+
+    #Convert to correct ES data type
+    if descriptor['type'] == 'number':
+        return float(value)
+    elif descriptor['type'] == 'integer':
+        return int(value)
+    return value
+
+def processField(value, descriptor, field_type, delimiterField='opp:fieldValueDelimiter'):
+    """Process a field"""
+    if None is value:
+        return value
+
+    is_array_value = False
+    values = [value]
+
+    # Is the value an array of values?
+    if delimiterField in descriptor:
+        is_array_value = True
+        values = value.split(descriptor[delimiterField])
+
+    # Are there contraints that help process the data?
+    if 'constraints' in descriptor:
+        if 'pattern' in descriptor['constraints']:
+            for idx, val in enumerate(values):
+                regex = re.compile('^{0}$'.format(descriptor['constraints']['pattern']))
+                match = regex.match(value)
+                if match and match.lastindex is 1:
+                    #### could handle VALUE PROCESSING here
+                    values[idx] = processFieldValue(match.group(1), descriptor, field_type)
+                else:
+                    # must be null
+                    values[idx] = None
+    else:
+        for idx,val in enumerate(values):
+            values[idx] = processFieldValue(val, descriptor, field_type)
+
+    # Return the value
+    if is_array_value:
+        return values
+    else:
+        return values[0]
