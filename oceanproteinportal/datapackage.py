@@ -3,12 +3,15 @@ import re
 import string
 import sys
 import yaml
-from datapackage import Package, Resource, validate, exceptions
+from datapackage import *
 """
 Create a Frictionlessdata Data Package for the OceanProteinPortal.
 """
 
 DATAPACKAGE_ONTOLOGY_KEY = '_ontology'
+
+if __name__ == "__main__":
+    buildTabularPackage(sys.argv[1])
 
 def buildTabularPackage(config_file):
     """Build a tabular OPP DataPackage.
@@ -17,40 +20,52 @@ def buildTabularPackage(config_file):
 
     # Read the configuration
     with open(config_file, 'r') as yamlfile:
-        config = yaml.load(yamlfile)
+        pkg_descriptor = yaml.load(yamlfile)
 
-    submission_name = config.get('name', None)
+    # Required metadata
+    submission_name = pkg_descriptor.get('name', None)
     if submission_name is None:
         raiseException('Submission Name is required.')
-    version_number = config.get('version', None)
+    version_number = pkg_descriptor.get('version', None)
     if version_number is None:
         raiseException('Version Number is required.')
-    protein_data = config.get('protein')
+    # Files
+    if pkg_descriptor.get('files', None) is None:
+        raiseException('Missing files description')
+    protein_data = pkg_descriptor['files'].get('protein')
     if protein_data is None:
         raiseException('Path to protein spectral counts is required.')
+    peptide_data = pkg_descriptor['files'].get('peptide')
     if peptide_data is None:
         raiseException('Path to peptide spectral counts is required.')
+    fasta_data = pkg_descriptor['files'].get('fasta')
     if fasta_data is None:
         raiseException('Path to protein FASTA is required.')
 
-    # Get the mappings between data templates and the ontology
-    template_mappings = oceanproteinportal.ontology.getTemplateMappings()
+    #remove the files from the config for the datapackage descriptor
+    del pkg_descriptor['files']
 
     # Data provider tells us which ontology they used
-    ontology_version = config.get('ontology-version', oceanproteinportal.ontology.getLatestOntologyVersion())
-    if (ontology_version not in template_mappings)
+    ontology_version = pkg_descriptor.get('ontology-version', oceanproteinportal.ontology.getLatestOntologyVersion())
+    # Get the mappings between data templates and the ontology
+    template_mappings = oceanproteinportal.ontology.getTemplateMappings()
+    if (ontology_version not in template_mappings):
         raise Exception('Unknown Ontology version')
-
+    # Set the package name and other required fields
     pkg_name = constructPackageName(submission_name=submission_name, version_number=version_number)
-    package = Package({
-      'name': pkg_name,
-      'ontology-version': ontology_version
-    })
+    pkg_descriptor['name'] = pkg_name
+    pkg_descriptor['opp:shortName'] = submission_name
+    pkg_descriptor['profile'] = 'data-package'
 
+    # Get the file-specific config
+
+
+    # Build the pkg
+    package = Package(pkg_descriptor)
     # Protein data
     proteins = Resource({
       'profile': 'tabular-data-resource',
-      'path': protein_data,
+      'path': protein_data['filename'],
       'name': pkg_name + '-proteins',
       'odo-dt:dataType': { '@id': oceanproteinportal.ontology.getDataFileType(type='protein', ontology_version=ontology_version) }
     })
@@ -64,7 +79,7 @@ def buildTabularPackage(config_file):
             proteins.descriptor['schema']['fields'][index]['rdfType'] = mapping['class']
             proteins.descriptor['schema']['fields'][index]['type'] = mapping['type']
             logging.info('- PROTEIN field: %s' % (field))
-        else
+        else:
             logging.info('- PROTEIN: Skipping unknown field %s' % (field))
     # Add the protein data descriptor to the package
     package.add_resource(proteins.descriptor)
@@ -74,7 +89,7 @@ def buildTabularPackage(config_file):
     logging.info('Protein FASTA Data:')
     fasta = Resource({
       'profile': 'data-resource',
-      'path': fasta_data,
+      'path': fasta_data['filename'],
       'name': pkg_name + '-fasta',
       'encoding': 'utf-8',
       'format': 'fasta',
@@ -88,7 +103,7 @@ def buildTabularPackage(config_file):
     # Peptide data
     peptides = Resource({
       'profile': 'tabular-data-resource',
-      'path': peptide_data,
+      'path': peptide_data['filename'],
       'name': pkg_name + '-peptides',
       'odo-dt:dataType': { '@id': oceanproteinportal.ontology.getDataFileType(type='peptide', ontology_version=ontology_version) }
     })
@@ -102,7 +117,7 @@ def buildTabularPackage(config_file):
             peptides.descriptor['schema']['fields'][index]['rdfType'] = mapping['class']
             peptides.descriptor['schema']['fields'][index]['type'] = mapping['type']
             logging.info('- PEPTIDE field: %s' % (field))
-        else
+        else:
             logging.info('- PEPTIDE: Skipping unknown field %s' % (field))
     # Add the protein data descriptor to the package
     package.add_resource(peptides.descriptor)
