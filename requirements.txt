@@ -1,1 +1,6 @@
-
+biopython
+datapackage
+elasticsearch==5.5.3
+goodtables
+pyyaml
+requests
