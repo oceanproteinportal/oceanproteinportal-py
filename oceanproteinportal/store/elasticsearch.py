@@ -198,13 +198,13 @@ class ElasticStore(DataStore):
 
                     if row['productName'] is not None:
                         data['productName'] = row['productName']
-                    if row['molecularWeight'] is not None:
+                    if row.get('molecularWeight', None) is not None:
                         data['molecularWeight'] = row['molecularWeight']
-                    if row['enzymeCommId'] is not None:
+                    if row.get('enzymeCommId', None) is not None:
                         data['enzymeCommId'] = row['enzymeCommId']
-                    if row['uniprotId'] is not None:
+                    if row.get('uniprotId', None) is not None:
                         data['uniprotId'] = row['uniprotId']
-                    if row['otherIdentifiedProteins'] is not None:
+                    if row.get('otherIdentifiedProteins', None) is not None:
                         data['otherIdentifiedProteins'] = row['otherIdentifiedProteins']
 
                     # NCBI
@@ -263,7 +263,7 @@ class ElasticStore(DataStore):
                 cruise = {
                   'value': row.get('spectralCount:cruise', None),
                 }
-                if cruise['value'] in datasetCruises:
+                if datasetCruises is not None and cruise['value'] in datasetCruises:
                     cruise['uri'] = datasetCruises[cruise['value']]['uri']
                 # To-do
                 # 1. Lookup the cruise URI in the datapackage
@@ -422,10 +422,11 @@ class ElasticStore(DataStore):
             logging.info('Cruises to grab stations for: %s' % (res['aggregations']['data']['cruises']['buckets']))
             for agg_cruise in res['aggregations']['data']['cruises']['buckets']:
                 cruise = {'label': agg_cruise['key']}
-                for existing_cruise in dataset_doc['_source']['cruises']:
-                    if existing_cruise['label'] == cruise['label']:
-                        cruise = existing_cruise
-                        break
+                if dataset_doc['_source'].get('cruises', None) is not None:
+                    for existing_cruise in dataset_doc['_source']['cruises']:
+                        if existing_cruise['label'] == cruise['label']:
+                            cruise = existing_cruise
+                            break
 
                 # Get station names
                 lookup_station_coordinates = []
