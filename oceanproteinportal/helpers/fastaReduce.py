@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import sys
 import re
 import os
@@ -30,32 +32,43 @@ parser.add_option("-o", "--output_name", dest="outputFile",
 #Makes sure all mandatory options appear
 mandatories = ["dbFile", "protFile"]
 for m in mandatories:
-  if not options.__dict__[m]:
-    print("A mandatory option is missing!\n See the HELP menu - 'fastaReduce.py -h'" )
-    parser.print_help()
-    exit(-1)
-#Sets the default outputfile name
+	if not options.__dict__[m]:
+		print("A mandatory option is missing!\n See the HELP menu - 'fastaReduce.py -h'" )
+		parser.print_help()
+		exit(-1)
+#Sets the default outputfile name	
 if options.outputFile == None:
-  outputName = options.dbFile
-  outputFileName = outputName + "_only_PSM_match_sequences.fasta"
-else:
-  outputName = options.outputFile
-  outputFileName = outputName + ".fasta"
+	outputName = options.dbFile
+	outputFileName = outputName + "_only_PSM_match_sequences.fasta"
+else: 
+	outputName = options.outputFile
+	outputFileName = outputName + ".fasta"
 
 #Set variables based on collected input
 outputFile = open(outputFileName, "w")
 
-recordIx = SeqIO.index(options.dbFile, "fasta")
+#recordIx = SeqIO.index(options.dbFile, "fasta")
+cleanDict = {}
+record_ids = list()
+for record in SeqIO.parse(options.dbFile, "fasta"):
+	if record.id not in record_ids:
+		record_ids.append(record.id)
+		cleanDict[record.id] = record
+
+
 resultsDict = {}
 
 protFileRead = open(options.protFile, "r").readlines()
 
 for element in protFileRead:
-  element = element.strip("\n")
-  seq_record = recordIx[element]
-  str_seq = str(seq_record.seq)
-  str_seq = re.sub('[Xx\*]',"", str_seq)
-  seq_record.seq = Seq(str_seq, generic_protein)
-  resultsDict[element] = seq_record
+	element = element.strip("\n")
+	try:
+		seq_record = cleanDict[element]
+		str_seq = str(seq_record.seq)
+		str_seq = re.sub('[Xx\*]',"", str_seq)
+		seq_record.seq = Seq(str_seq, generic_protein)
+		resultsDict[element] = seq_record
+	except:
+		print("WARNING: A sequence for the following does not exist in this fasta file: " + str(element))
 
 SeqIO.write(resultsDict.values(), outputFile, "fasta")
