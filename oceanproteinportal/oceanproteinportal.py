@@ -27,7 +27,7 @@ def ingest(config_file):
     """Ingest a datapackage"""
 
     # Read the config file telling you what to do
-    config = initialize(config_file)
+    cfg = initialize(config_file)
 
     # Inspect the datapackage
     dp = datapackage.DataPackage(cfg['ingest'].get('datapackage', None))
