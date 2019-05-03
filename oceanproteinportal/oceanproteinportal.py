@@ -55,6 +55,8 @@ def ingest(config_file):
     module = __import__('oceanproteinportal.store')
     store_ = getattr(module, store_type)
     store = store_()
+    
+    # To-Do: Initialize the store...
 
     if cfg['ingest'].get('load-dataset-metadata', False):
         logging.info('***** LOADING DATASET METADATA *****')
